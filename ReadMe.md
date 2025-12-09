@@ -1,6 +1,6 @@
 # 🚀 Enhanced Patent Creator AI Agent
 
-A comprehensive AI-powered patent creation system built with **LangGraph Multi-Agent Architecture**, **Claude Sonnet 4**, and **Vercel AI Gateway**. This system leverages advanced AI agents to analyze inventions, conduct prior art research, and generate complete patent applications.
+A comprehensive AI-powered patent creation system built with **LangGraph Multi-Agent Architecture** and **Multi-Provider AI Support**. This system leverages advanced AI agents with automatic fallback across **OpenAI**, **Google Gemini**, and **Groq** to analyze inventions, conduct prior art research, and generate complete patent applications.
 
 ## ✨ **NEW: Future Enhancements** 🎉
 
@@ -87,15 +87,16 @@ The system uses 5 specialized AI agents orchestrated by LangGraph:
 ### **Core Technologies**
 - **Next.js 14**: React framework with App Router
 - **LangGraph**: Multi-agent workflow orchestration
-- **Claude Sonnet 4**: Advanced AI model via Vercel AI Gateway
 - **Tailwind CSS**: Modern UI framework
 - **TypeScript**: Type-safe development
 
-### **AI & ML**
-- **Vercel AI Gateway**: AI model management and routing
-- **OpenAI SDK**: Direct API integration
+### **AI & ML Providers**
+- **UnifiedAIProvider**: Multi-provider system with automatic fallback
+- **OpenAI**: GPT models via OpenAI API or Vercel AI Gateway
+- **Google Gemini**: Advanced multimodal AI models
+- **Groq**: Ultra-fast inference with Llama models
 - **LangChain**: AI agent framework integration
-- **Multi-Agent System**: Specialized AI agents
+- **Multi-Agent System**: Specialized AI agents with provider flexibility
 
 ### **Performance & Monitoring**
 - **AgentCache**: Intelligent caching system
@@ -108,7 +109,7 @@ The system uses 5 specialized AI agents orchestrated by LangGraph:
 ### **Prerequisites**
 - Node.js 18+ 
 - npm or pnpm
-- Vercel AI Gateway API key
+- At least one AI provider API key (OpenAI, Gemini, or Groq)
 
 ### **Setup**
 ```bash
@@ -124,14 +125,30 @@ cp .env.example .env.local
 ```
 
 ### **Environment Variables**
-```bash
-# Required: Vercel AI Gateway API Key
-AI_GATEWAY_API_KEY=your_vercel_ai_gateway_key_here
 
-# Optional: Additional configuration
+The system supports multiple AI providers with automatic fallback. Configure at least one:
+
+```bash
+# OpenAI / Vercel AI Gateway (Optional)
+OPENAI_API_KEY=your_openai_api_key_here
+# OR
+AI_GATEWAY_API_KEY=your_vercel_ai_gateway_key_here
+OPENAI_MODEL=gpt-3.5-turbo  # Optional, defaults to gpt-3.5-turbo
+
+# Google Gemini (Optional)
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-pro  # Optional, defaults to gemini-pro
+
+# Groq (Optional)
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=llama-3.1-8b-instant  # Optional, defaults to llama-3.1-8b-instant
+
+# Application Configuration
 NODE_ENV=development
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+**Note**: The system will automatically try providers in order (OpenAI → Gemini → Groq) if one fails, providing robust fallback capabilities.
 
 ### **Start Development Server**
 ```bash
@@ -139,6 +156,102 @@ npm run dev
 ```
 
 Visit `http://localhost:3000` to access the application.
+
+## 🤖 **AI Provider Configuration**
+
+### **Multi-Provider Support**
+
+This system uses a **UnifiedAIProvider** that supports multiple AI providers with automatic fallback. This ensures high availability and cost optimization.
+
+### **🔵 Google Gemini**
+
+**Overview**: Google's advanced multimodal AI model, excellent for complex reasoning and analysis tasks.
+
+**Setup**:
+1. Get your API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Add to `.env.local`: `GEMINI_API_KEY=your_key_here`
+3. Optional: Set `GEMINI_MODEL=gemini-pro` (default) or `gemini-1.5-pro`
+
+**Features**:
+- **Default Model**: `gemini-pro`
+- **Strengths**: Strong reasoning, multimodal capabilities, cost-effective
+- **Use Cases**: Research analysis, document generation, complex patent analysis
+- **Integration**: Automatic message format conversion for Gemini API
+- **Configuration**: Supports temperature and max output tokens
+
+**Model Options**:
+- `gemini-pro`: Standard model (default)
+- `gemini-1.5-pro`: Enhanced model with better performance
+- `gemini-1.5-flash`: Faster, lighter model
+
+### **⚡ Groq**
+
+**Overview**: Ultra-fast inference platform with Llama models, providing exceptional speed for real-time applications.
+
+**Setup**:
+1. Get your API key from [Groq Console](https://console.groq.com/)
+2. Add to `.env.local`: `GROQ_API_KEY=your_key_here`
+3. Optional: Set `GROQ_MODEL=llama-3.1-8b-instant` (default)
+
+**Features**:
+- **Default Model**: `llama-3.1-8b-instant`
+- **Strengths**: Extremely fast inference, low latency, cost-effective
+- **Use Cases**: Real-time processing, high-throughput workflows, rapid prototyping
+- **Integration**: Direct OpenAI-compatible API
+- **Performance**: Sub-second response times for most queries
+
+**Model Options**:
+- `llama-3.1-8b-instant`: Fast, efficient model (default)
+- `llama-3.1-70b-versatile`: More capable, slightly slower
+- `mixtral-8x7b-32768`: High-quality, longer context
+
+### **🔀 Automatic Fallback System**
+
+The system automatically handles provider failures with intelligent fallback:
+
+1. **Priority Order**: Tries providers in order: OpenAI → Gemini → Groq
+2. **Error Handling**: 
+   - Skips quota/auth errors (429, 401, 403)
+   - Retries transient errors with next provider
+   - Logs provider usage for monitoring
+3. **Provider Selection**: 
+   - Uses first available provider by default
+   - Can force specific provider via API options
+   - Tracks which provider was used in responses
+
+**Example Fallback Flow**:
+```
+1. Try OpenAI → Success ✅
+2. Try OpenAI → Quota Error → Try Gemini → Success ✅
+3. Try OpenAI → Error → Try Gemini → Error → Try Groq → Success ✅
+```
+
+### **📊 Provider Comparison**
+
+| Provider | Speed | Cost | Best For | Model Options |
+|----------|-------|------|----------|---------------|
+| **OpenAI** | Medium | Higher | Production, reliability | GPT-3.5, GPT-4 |
+| **Gemini** | Medium | Lower | Complex reasoning, analysis | gemini-pro, gemini-1.5-pro |
+| **Groq** | Very Fast | Lower | Real-time, high-throughput | llama-3.1-8b-instant |
+
+### **🔧 Advanced Configuration**
+
+**Force Specific Provider**:
+```javascript
+// In API calls, you can force a specific provider
+const result = await aiProvider.chatCompletion(messages, {
+  provider: 'gemini',  // Force Gemini
+  temperature: 0.3,
+  max_tokens: 2000
+});
+```
+
+**Provider-Specific Settings**:
+```javascript
+// Gemini-specific: Supports maxOutputTokens
+// Groq-specific: Supports max_tokens (OpenAI-compatible)
+// OpenAI-specific: Standard OpenAI parameters
+```
 
 ## 🎯 **Usage**
 
@@ -316,7 +429,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 **Acknowledgments**
 
 - **LangGraph**: Multi-agent workflow orchestration
-- **Anthropic**: Claude Sonnet 4 AI model
+- **OpenAI**: GPT models and API infrastructure
+- **Google**: Gemini AI models
+- **Groq**: Ultra-fast inference platform
 - **Vercel**: AI Gateway and deployment platform
 - **Next.js**: React framework
 - **Tailwind CSS**: UI framework
@@ -330,4 +445,4 @@ For support and questions:
 
 ---
 
-**Built with ❤️ using LangGraph Multi-Agent Architecture and Claude Sonnet 4**
+**Built with ❤️ using LangGraph Multi-Agent Architecture with Multi-Provider AI Support (OpenAI, Gemini, Groq)**
