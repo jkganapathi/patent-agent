@@ -3,22 +3,43 @@
 ## 🚀 Quick Start
 
 ### 1. Environment Variables
-Create a `.env.local` file in the root directory with the following variables:
+Create a `.env.local` file in the root directory with at least one AI provider API key:
 
 ```bash
-# Vercel AI Gateway API Key (Required)
-# Get your API key from: https://vercel.com/docs/ai-gateway
+# Option 1: OpenAI / Vercel AI Gateway
+OPENAI_API_KEY=your_openai_api_key_here
+# OR
 AI_GATEWAY_API_KEY=your_vercel_ai_gateway_key_here
+
+# Option 2: Google Gemini (Recommended for cost-effectiveness)
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# Option 3: Groq (Recommended for speed)
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
-**Important**: The API key should be a complete Vercel AI Gateway key, not a regular OpenAI key. Make sure there are no extra characters or encoding issues.
+**Important**: You need at least one API key configured. The system will automatically use available providers with fallback.
 
-### 2. Get Vercel AI Gateway API Key
-1. Visit [Vercel AI Gateway](https://ai-gateway.vercel.sh/)
-2. Sign up or log in to your Vercel account
-3. Navigate to the AI Gateway dashboard
+### 2. Get API Keys
+
+#### **Google Gemini API Key** (Recommended)
+1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Sign in with your Google account
+3. Click "Create API Key"
+4. Copy the key and add to `.env.local` as `GEMINI_API_KEY`
+
+#### **Groq API Key** (For Ultra-Fast Performance)
+1. Visit [Groq Console](https://console.groq.com/)
+2. Sign up or log in
+3. Navigate to API Keys section
 4. Create a new API key
-5. Copy the key and add it to your `.env.local` file as `AI_GATEWAY_API_KEY`
+5. Copy the key and add to `.env.local` as `GROQ_API_KEY`
+
+#### **OpenAI / Vercel AI Gateway API Key** (Optional)
+1. Visit [Vercel AI Gateway](https://ai-gateway.vercel.sh/) or [OpenAI Platform](https://platform.openai.com/)
+2. Sign up or log in
+3. Create a new API key
+4. Copy the key and add to `.env.local` as `OPENAI_API_KEY` or `AI_GATEWAY_API_KEY`
 
 ### 3. Install Dependencies
 ```bash
@@ -62,9 +83,11 @@ Open your browser and navigate to `http://localhost:3000`
 
 ### Backend
 - **LangGraph Multi-Agent System**: Orchestrated workflow with specialized agents
-- **Claude Sonnet 4**: Advanced AI model for patent analysis via Vercel AI Gateway
+- **UnifiedAIProvider**: Multi-provider AI system with automatic fallback
+- **Google Gemini**: Advanced AI models for patent analysis
+- **Groq**: Ultra-fast inference for real-time processing
+- **OpenAI**: GPT models via OpenAI API or Vercel AI Gateway
 - **Next.js API Routes**: Serverless API endpoints
-- **Vercel AI Gateway**: Scalable AI infrastructure
 
 ### Key Components
 - `/lib/langgraph-config.js`: Multi-agent workflow configuration and orchestration
@@ -105,9 +128,14 @@ The application can be deployed to any platform that supports Next.js:
 
 ### Common Issues
 
-1. **API Key Error**: Ensure your Vercel AI Gateway API key is valid and properly configured
-2. **CORS Issues**: All API calls are server-side, so CORS shouldn't be an issue
-3. **Rate Limiting**: Vercel AI Gateway has rate limits; the app includes error handling for this
+1. **API Key Error**: Ensure at least one AI provider API key is valid and properly configured
+   - Check that your `.env.local` file exists and contains the correct keys
+   - Verify API keys are active and have sufficient quota
+2. **Provider Fallback**: The system automatically tries multiple providers if one fails
+   - Check console logs to see which provider is being used
+   - Ensure at least one provider is configured correctly
+3. **CORS Issues**: All API calls are server-side, so CORS shouldn't be an issue
+4. **Rate Limiting**: All providers have rate limits; the app includes error handling and automatic fallback
 
 ### Debug Mode
 Check the browser console for detailed error messages and API response logs.
