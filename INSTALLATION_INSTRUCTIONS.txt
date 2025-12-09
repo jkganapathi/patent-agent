@@ -1,0 +1,36 @@
+// =============================================================================
+// 📁 INSTALLATION_INSTRUCTIONS.txt
+
+PATENT CREATOR AI - INSTALLATION GUIDE
+=====================================
+
+STEP 1: SETUP PROJECT
+--------------------
+1. Create a new directory: mkdir patent-creator-ai
+2. Navigate to directory: cd patent-creator-ai
+3. Copy all the provided code files into appropriate folders
+4. Run: npm install
+
+STEP 2: ENVIRONMENT VARIABLES
+----------------------------
+1. Create .env.local file in root directory
+2. Add your API keys:
+   VERCEL_AI_API_KEY=your_vercel_ai_key
+   OPENAI_API_KEY=your_openai_key
+   LANGGRAPH_API_KEY=your_langgraph_key
+
+STEP 3: RUN THE APPLICATION
+--------------------------
+1. Development: npm run dev
+2. Production build: npm run build
+3. Start production: npm start
+
+STEP 4: LANGGRAPH INTEGRATION
+----------------------------
+1. Update app/api/patent/route.js with your LangGraph workflow
+2. Configure agent tasks and dependencies
+3. Test the API endpoints
+
+STEP 5: ADDITIONAL FILES NEEDED
+------------------------------
+Create these additional files for full functionality:
